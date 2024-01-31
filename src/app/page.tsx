@@ -4,6 +4,7 @@ import Navbar from "@/components/Navbar";
 import axios from "axios";
 import Image from "next/image";
 import { useQuery } from "react-query";
+import { format, parseISO } from "date-fns";
 
 type WeatherData = {
   cod: string;
@@ -71,13 +72,40 @@ export default function Home() {
     }
   );
 
-  console.log("data ", data?.city.name);
+  console.log("data ", data);
 
-  if (isLoading) return 'Loading...'
+  const firstData = data?.list[0];
+  
 
+  if (isLoading) 
+    return (
+      <div className="flex items-center min-h-screen justify-center">
+        <p className="animate-bounce">Loading...</p>
+      </div>
+
+  
+    );
+  
   return (
     <div className="flex flex-col gap-4 bg-gray-300 min-h-screen">
       <Navbar />
+      <main className="px-3 max-w-7xl mx-auto flex flex-col gap-9 w-full pb-10 pt-4">
+        {/* today */}
+        <section>
+          <div>
+            <h2 className="flex gap-1 text-2xl items-end">
+              <p>{format(parseISO(firstData?.dt_txt ?? ''), 'EEEE')}</p>
+              <p className="text-lg">{format(parseISO(firstData?.dt_txt ?? ''), 'PPP')}</p>
+            </h2>
+            
+          </div>
+        </section>
+        {/* 7 day forecast */}
+        <section>
+
+        </section>
+
+      </main>
     </div>  
   );
 }
