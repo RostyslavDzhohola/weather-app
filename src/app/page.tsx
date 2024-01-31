@@ -4,11 +4,16 @@ import Navbar from "@/components/Navbar";
 import axios from "axios";
 import Image from "next/image";
 import { useQuery } from "react-query";
-import { format, parseISO } from "date-fns";
+import { format, fromUnixTime, parseISO } from "date-fns";
 import Container from "@/components/Container";
 import { convertKelvinToCelsius } from "@/utils/convertKelvinToCelsius";
 import WeatherIcon from "@/components/WeatherIcon";
 import { getDayOrNightIcon } from "@/utils/getDayOrNightIcon";
+import WeatherDetails from "@/components/WeatherDetails";
+import { metersToKilometers } from "@/utils/metersToKilometers";
+import { convertWindSpeed } from "@/utils/convertWindSpeed";
+import ForecastWeatherDetail from "@/components/ForecastWeatherDetail";
+
 
 type WeatherData = {
   cod: string;
@@ -80,6 +85,11 @@ export default function Home() {
 
   const firstData = data?.list[0];
   
+  const uniqueDates = [
+    ...new Set(
+      data?.list.map((entry) => new Date(entry.dt * 1000).toISOString().split("T")[0])
+    ) 
+  ]
 
   if (isLoading) 
     return (
@@ -142,11 +152,35 @@ export default function Home() {
               </div>
             </Container>
           </div>
-        </section>
-        {/* 7 day forecast */}
-        <section>
+          <div className="flex gap-4">
+            <Container className="w-fit justify-center flex-col px-4 items-center">
+              <p className="capitalize text-center">{firstData?.weather[0].description ?? ''}</p>
+              <WeatherIcon 
+                iconName={getDayOrNightIcon(firstData?.weather[0].icon ?? '', firstData?.dt_txt ?? '')} 
+              />
+            </Container>
+            <Container className="bg-yellow-300/80 px-6 gap-4 justify-between overflow-x-auto">
+              <WeatherDetails 
+                visibility={metersToKilometers(firstData?.visibility ?? 1000)}
+                airPressure={`${firstData?.main.pressure} hPa`}
+                humidity={`${firstData?.main.humidity }%`}
+                windSpeed={convertWindSpeed(firstData?.wind.speed ?? 0)}
+                sunrise={(format(fromUnixTime(data?.city.sunrise ?? 0), 'H:mm'))}
+                sunset={format(fromUnixTime(data?.city.sunset ?? 0), 'H:mm')}
+                
+              />
+            </Container>
+            
+          </div>
 
         </section>
+        {/* 7 day forecast */}
+        <section className="flex w-ful flex-col gap-4">
+          <p className="text-2xl">Forecast (7 days)</p>
+          <ForecastWeatherDetail
+
+          />
+        </section>  
 
       </main>
     </div>  
