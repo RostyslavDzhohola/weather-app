@@ -5,7 +5,6 @@ import axios from "axios";
 import Image from "next/image";
 import { useQuery } from "react-query";
 
-// http://api.openweathermap.org/data/2.5/forecast?q=austin&appid=0d1a92b77962c76d42b6690f06e0d3db&cnt=56
 type WeatherData = {
   cod: string;
   message: number;
