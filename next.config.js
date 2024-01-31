@@ -1,11 +1,11 @@
+/** @format */
+
 module.exports = {
   images: {
     remotePatterns: [
       {
         protocol: 'https',
-        hostname: 'assets.example.com',
-        port: '',
-        pathname: '/account123/**',
+        hostname: 'openweathermap.org',
       },
     ],
   },
