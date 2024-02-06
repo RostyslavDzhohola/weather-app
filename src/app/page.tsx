@@ -184,7 +184,7 @@ export default function Home() {
         </section>
         {/* 7 day forecast */}
         <section className="flex w-ful flex-col gap-4">
-          <p className="text-2xl">Forecast (7 days)</p>
+          <p className="text-2xl">Forecast (5 days)</p>
           {firstDataForEachDay.map((d, i) => 
             <ForecastWeatherDetail 
               key={i}
