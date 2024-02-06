@@ -7,6 +7,8 @@ import { GrMapLocation } from "react-icons/gr";
 import SearchBox from "./SearchBox";
 import { useState } from "react";
 import axios from "axios";
+import { useAtom } from "jotai";
+import { placeAtom } from "@/app/atom";
 
 type Props = {};
 
@@ -17,17 +19,18 @@ export default function Navbar({}: Props) {
   const [error, setError] = useState("");
 
   const [suggestions, setSuggestions] = useState<string[]>([]);
-  const [showSuggestions, setShowSuggestions] = useState(false);
+  const [showSuggestions, setShowSuggestions] = useState(false);  
+  const [place, setPlace] = useAtom(placeAtom);
 
   async function handleInputChange(value: string) {
     setCity(value);
     if (value.length >= 3) {
       try {
         const response = await axios.get(
-          `https://api.openweathermap.org/data/2.5/forecast?q=austin&appid=${apiKey}&cnt=56`
+          `https://api.openweathermap.org/data/2.5/find?q=${value}&appid=${apiKey}`
         );
 
-        const suggestions = response.data.map((item: any) => item.name);
+        const suggestions = response.data.list.map((item: any) => item.name);
         setSuggestions(suggestions);
         setError("");
         setShowSuggestions(true);
@@ -52,6 +55,7 @@ export default function Navbar({}: Props) {
       setError("City not found");
     } else {
       setError("");
+      setPlace(city);
       setShowSuggestions(false);
     }
   }
