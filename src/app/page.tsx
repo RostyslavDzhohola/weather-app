@@ -91,6 +91,14 @@ export default function Home() {
     ) 
   ]
 
+  const firstDataForEachDay = uniqueDates.map((date) => {
+    return data?.list.find((entry) => {
+      const entryDate = new Date(entry.dt * 1000).toISOString().split("T")[0];
+      const entryTime = new Date(entry.dt * 1000).getHours();
+      return entryDate === date && entryTime >= 6;
+    });
+  });
+    
   if (isLoading) 
     return (
       <div className="flex items-center min-h-screen justify-center">
@@ -177,9 +185,26 @@ export default function Home() {
         {/* 7 day forecast */}
         <section className="flex w-ful flex-col gap-4">
           <p className="text-2xl">Forecast (7 days)</p>
-          <ForecastWeatherDetail
-
-          />
+          {firstDataForEachDay.map((d, i) => 
+            <ForecastWeatherDetail 
+              key={i}
+              description={d?.weather[0].description ?? ''}
+              weatherIcon={d?.weather[0].icon ?? '01d'}
+              date={format(parseISO(d?.dt_txt ?? ''), 'dd.MM')}
+              day={format(parseISO(d?.dt_txt ?? ''), 'EEEE')}
+              feelsLike={d?.main.feels_like ?? 0}
+              temp={d?.main.temp ?? 0}
+              tempMax={d?.main.temp_max ?? 0}
+              tempMin={d?.main.temp_min ?? 0}
+              airPressure={`${d?.main.pressure} hPa`}
+              humidity={`${d?.main.humidity }%`}
+              sunrise={(format(fromUnixTime(data?.city.sunrise ?? 0), 'H:mm'))}
+              sunset={format(fromUnixTime(data?.city.sunset ?? 0), 'H:mm')}
+              visibility={`${metersToKilometers(d?.visibility ?? 1000)}`}
+              windSpeed={`${convertWindSpeed(d?.wind.speed ?? 1.64)}`}
+            />
+          )}
+          
         </section>  
 
       </main>

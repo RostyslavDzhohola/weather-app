@@ -21,7 +21,7 @@ export default function ForecastWeatherDetail(props: ForecastWeatherDetailProps)
     weatherIcon = '01d',
     date = '19.09',
     day = 'Monday',
-    temp = 25,
+    temp = 289,
     feelsLike = 300,
     tempMin = 301,
     tempMax = 299,
